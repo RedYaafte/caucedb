@@ -12,7 +12,29 @@ validated.
 
 ## Linux installation
 
-Download the `x86_64-unknown-linux-gnu` archive and its `.sha256` file from
+Install the current Linux x86-64 preview to `~/.local/bin` with one command:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/RedYaafte/caucedb/main/install.sh | sh
+```
+
+The installer downloads the `v0.1.0-alpha.1` release, verifies its SHA-256
+checksum, and installs atomically without `sudo`. It requires `curl`, `tar`,
+`sha256sum`, `awk`, `mktemp` and standard Linux tools. Set
+`CAUCEDB_INSTALL_DIR=/absolute/path` to choose another writable directory, or
+`CAUCEDB_VERSION=v0.1.0-alpha.1` to select a published version. The installer
+will tell you if its directory is not in `PATH`. For review before execution,
+[read the installer source](install.sh) instead of piping it directly to `sh`.
+It does not install Oracle Instant Client or change your shell configuration.
+
+For example, to install in a different directory:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/RedYaafte/caucedb/main/install.sh | CAUCEDB_INSTALL_DIR="$HOME/bin" sh
+```
+
+For a manual installation, download the `x86_64-unknown-linux-gnu` archive and
+its `.sha256` file from
 [GitHub Releases](https://github.com/RedYaafte/caucedb/releases), then verify and
 extract them:
 
@@ -23,7 +45,8 @@ tar -xzf caucedb-v0.1.0-alpha.1-x86_64-unknown-linux-gnu.tar.gz
 ```
 
 The example filename is for the first preview tag. Use the filenames of the
-release you downloaded. Releases contain the CauceDB executable **only**. You
+release you downloaded. Releases contain the CauceDB executable, README and
+MIT license, but **not** Oracle client libraries. You
 must install [Oracle Instant Client Basic or Basic Light](https://www.oracle.com/database/technologies/instant-client/downloads.html)
 separately on each machine, with the same CPU architecture as CauceDB. Linux
 also needs the runtime libraries required by your Instant Client version,

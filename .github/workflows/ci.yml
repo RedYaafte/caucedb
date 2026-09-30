@@ -19,6 +19,8 @@ jobs:
           components: clippy, rustfmt
       - name: Check formatting
         run: cargo fmt --all -- --check
+      - name: Check installer syntax
+        run: sh -n install.sh
       - name: Run unit and workflow tests
         run: cargo test --locked
       - name: Check lints
