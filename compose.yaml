@@ -1,0 +1,15 @@
+services:
+  oracle:
+    image: gvenzl/oracle-free:23-slim-faststart
+    ports:
+      - "127.0.0.1:1522:1521"
+    environment:
+      ORACLE_RANDOM_PASSWORD: "true"
+      APP_USER: tui_test
+      APP_USER_PASSWORD: ${ORACLE_TEST_PASSWORD:?Set ORACLE_TEST_PASSWORD for the disposable test database}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
