@@ -10,6 +10,9 @@ This is an early preview intended for development and QA evaluation. Review SQL
 before execution and use least-privilege accounts. Production use has not been
 validated.
 
+<img width="1887" height="1133" alt="caucedb" src="https://github.com/user-attachments/assets/6f6b3dab-74a6-434b-ba1e-a51c55ed4ba9" />
+
+
 ## Linux installation
 
 Install the current Linux x86-64 preview to `~/.local/bin` with one command:
