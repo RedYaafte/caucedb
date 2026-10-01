@@ -18,11 +18,11 @@ Install the current Linux x86-64 preview to `~/.local/bin` with one command:
 curl -fsSL https://raw.githubusercontent.com/RedYaafte/caucedb/main/install.sh | sh
 ```
 
-The installer downloads the `v0.1.0-alpha.1` release, verifies its SHA-256
+The installer downloads the `v0.1.0-alpha.2` release, verifies its SHA-256
 checksum, and installs atomically without `sudo`. It requires `curl`, `tar`,
 `sha256sum`, `awk`, `mktemp` and standard Linux tools. Set
 `CAUCEDB_INSTALL_DIR=/absolute/path` to choose another writable directory, or
-`CAUCEDB_VERSION=v0.1.0-alpha.1` to select a published version. The installer
+`CAUCEDB_VERSION=v0.1.0-alpha.2` to select a published version. The installer
 will tell you if its directory is not in `PATH`. For review before execution,
 [read the installer source](install.sh) instead of piping it directly to `sh`.
 It does not install Oracle Instant Client or change your shell configuration.

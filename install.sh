@@ -2,7 +2,7 @@
 # Install the published Linux x86-64 CauceDB binary. Oracle Instant Client is separate.
 set -eu
 
-version=${CAUCEDB_VERSION:-v0.1.0-alpha.1}
+version=${CAUCEDB_VERSION:-v0.1.0-alpha.2}
 install_dir=${CAUCEDB_INSTALL_DIR:-}
 tmp_dir=
 staged_binary=
