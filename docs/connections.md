@@ -19,6 +19,9 @@ temporary session, pings it and runs `SELECT 1 FROM dual`. `F6` connects using
 the form. `F2` saves the profile; saving alone does not connect. PgUp/PgDn
 changes sections, Tab moves through fields, Left/Right changes options,
 Ctrl+U clears a field, and Esc closes the form.
+The form shows an elapsed-time indicator while a test or connection attempt is
+running, then shows validation errors or the test result in place. Saving closes
+the form and confirms the profile name in the status line.
 
 ## Service name, SID and TNS
 

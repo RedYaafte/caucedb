@@ -60,6 +60,7 @@ pub struct ConnectionForm {
     pub fields: Vec<Field>,
     pub selected: usize,
     pub section: usize,
+    pub action_attempted: bool,
 }
 impl ConnectionForm {
     pub fn new(p: Profile) -> Self {
@@ -152,6 +153,7 @@ impl ConnectionForm {
             fields,
             selected: 0,
             section: 0,
+            action_attempted: false,
         }
     }
     pub fn visible(&self) -> Vec<usize> {
@@ -227,11 +229,13 @@ impl ConnectionForm {
                             1
                         };
                         f.value = f.options[(at + delta) % f.options.len()].into();
+                        self.action_attempted = false;
                     }
                 } else if key.modifiers.contains(KeyModifiers::CONTROL)
                     && key.code == KeyCode::Char('u')
                 {
                     f.value.clear();
+                    self.action_attempted = false;
                 } else {
                     match key.code {
                         KeyCode::Char(c)
@@ -239,10 +243,12 @@ impl ConnectionForm {
                                 .modifiers
                                 .intersects(KeyModifiers::CONTROL | KeyModifiers::ALT) =>
                         {
-                            f.value.push(c)
+                            f.value.push(c);
+                            self.action_attempted = false;
                         }
                         KeyCode::Backspace => {
                             f.value.pop();
+                            self.action_attempted = false;
                         }
                         _ => {}
                     }
@@ -300,6 +306,7 @@ pub struct App {
     pub error: bool,
     pub messages: Vec<String>,
     pub started: Instant,
+    pub working_label: Option<&'static str>,
     pub followup: Option<Command>,
     pub close_form_on_connect: bool,
     pub connecting: Option<Profile>,
@@ -333,6 +340,7 @@ impl App {
             error: false,
             messages: vec![],
             started: Instant::now(),
+            working_label: None,
             followup: None,
             close_form_on_connect: false,
             connecting: None,
@@ -355,11 +363,23 @@ impl App {
             );
             return;
         }
+        let label = match &command {
+            Command::Connect(_, true) => "Testing Oracle connection",
+            Command::Connect(_, false) => "Connecting to Oracle",
+            Command::Run(_, _) => "Running SQL",
+            Command::Schemas => "Loading schemas",
+            Command::Objects(_) => "Loading objects",
+            Command::Commit => "Committing transaction",
+            Command::Rollback => "Rolling back transaction",
+            Command::Disconnect => "Disconnecting",
+            Command::Shutdown => "Shutting down",
+        };
         match self.worker.send(command) {
             Ok(()) => {
                 self.busy = true;
                 self.started = Instant::now();
-                self.message("Working…", false);
+                self.working_label = Some(label);
+                self.message(format!("{label}…"), false);
             }
             Err(e) => self.message(e.to_string(), true),
         }
@@ -435,6 +455,7 @@ impl App {
                 }
                 Event::Done => {
                     self.busy = false;
+                    self.working_label = None;
                     if let Some(c) = self.followup.take() {
                         self.send(c);
                     }
@@ -803,6 +824,7 @@ impl App {
                     _ => None,
                 };
                 if let Some(action) = action {
+                    form.action_attempted = true;
                     match form.profile() {
                         Err(e) => {
                             self.message(e.to_string(), true);
@@ -818,9 +840,13 @@ impl App {
                                 self.request_connect(p);
                             }
                             _ => {
+                                let name = p.name.clone();
                                 let result = self.save_profile(p);
                                 match result {
-                                    Ok(()) => self.message("Connection saved", false),
+                                    Ok(()) => self.message(
+                                        format!("Saved connection '{name}' · not connected"),
+                                        false,
+                                    ),
                                     Err(e) => {
                                         self.message(e.to_string(), true);
                                         self.modal = Some(Modal::Form(form));
@@ -979,6 +1005,7 @@ impl App {
                 let field = &mut form.fields[form.selected];
                 if field.options.is_empty() {
                     field.value.push_str(&text.replace(['\n', '\r'], ""));
+                    form.action_attempted = false;
                 }
             }
             Some(Modal::Prompt(_, value)) => value.push_str(&text.replace(['\n', '\r'], "")),

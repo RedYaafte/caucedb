@@ -43,6 +43,7 @@ fn profile_form_saves_without_keyring_and_retains_validation_errors() {
     key(&mut app, KeyCode::F(2), KeyModifiers::NONE);
     assert!(app.error);
     assert!(app.modal.is_some());
+    assert!(matches!(&app.modal, Some(Modal::Form(f)) if f.action_attempted));
     assert!(!path.exists());
     if let Some(Modal::Form(f)) = &mut app.modal {
         f.fields[14].value = "scott".into();
@@ -51,6 +52,9 @@ fn profile_form_saves_without_keyring_and_retains_validation_errors() {
     key(&mut app, KeyCode::F(2), KeyModifiers::NONE);
     assert!(!app.error, "{}", app.status);
     assert!(app.modal.is_none());
+    assert!(app
+        .status
+        .contains("Saved connection 'New connection' · not connected"));
     let saved = std::fs::read_to_string(path).unwrap();
     assert!(!saved.contains("never-on-disk"));
     assert_eq!(app.config.connections.len(), 1);

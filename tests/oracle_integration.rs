@@ -199,7 +199,6 @@ fn application_connects_and_executes_a_sql_document() {
     let dir = tempfile::tempdir().unwrap();
     let mut app = App::new(Config::default(), dir.path().join("connections.toml"));
     app.modal = Some(Modal::Form(Box::new(ConnectionForm::new(profile()))));
-    app.key(KeyEvent::new(KeyCode::F(6), KeyModifiers::NONE));
     let wait = |app: &mut App| {
         let deadline = std::time::Instant::now() + Duration::from_secs(45);
         while app.busy {
@@ -209,6 +208,14 @@ fn application_connects_and_executes_a_sql_document() {
         }
         assert!(!app.error, "{}", app.status);
     };
+    app.key(KeyEvent::new(KeyCode::F(5), KeyModifiers::NONE));
+    assert_eq!(app.working_label, Some("Testing Oracle connection"));
+    wait(&mut app);
+    assert!(app.status.starts_with("Test passed"));
+    assert!(matches!(&app.modal, Some(Modal::Form(form)) if form.action_attempted));
+
+    app.key(KeyEvent::new(KeyCode::F(6), KeyModifiers::NONE));
+    assert_eq!(app.working_label, Some("Connecting to Oracle"));
     wait(&mut app);
     assert!(app.modal.is_none());
     assert_eq!(app.schema, "TUI_TEST");

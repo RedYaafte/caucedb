@@ -1,6 +1,6 @@
 [package]
 name = "caucedb"
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.2"
 edition = "2021"
 description = "A keyboard-first database workbench; Oracle supported in this preview"
 license = "MIT"

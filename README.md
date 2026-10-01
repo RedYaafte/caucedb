@@ -39,12 +39,12 @@ its `.sha256` file from
 extract them:
 
 ```sh
-sha256sum -c caucedb-v0.1.0-alpha.1-x86_64-unknown-linux-gnu.tar.gz.sha256
-tar -xzf caucedb-v0.1.0-alpha.1-x86_64-unknown-linux-gnu.tar.gz
+sha256sum -c caucedb-v0.1.0-alpha.2-x86_64-unknown-linux-gnu.tar.gz.sha256
+tar -xzf caucedb-v0.1.0-alpha.2-x86_64-unknown-linux-gnu.tar.gz
 ./caucedb --help
 ```
 
-The example filename is for the first preview tag. Use the filenames of the
+The example filename is for this preview tag. Use the filenames of the
 release you downloaded. Releases contain the CauceDB executable, README and
 MIT license, but **not** Oracle client libraries. You
 must install [Oracle Instant Client Basic or Basic Light](https://www.oracle.com/database/technologies/instant-client/downloads.html)

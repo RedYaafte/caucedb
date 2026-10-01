@@ -184,8 +184,13 @@ toggle and credentials.
 PgUp/PgDn changes sections; Tab/Shift+Tab or Up/Down cycles fields. Left/Right,
 Space or Enter changes an option. Ctrl+U clears text, and Backspace removes the
 last character. The focused label becomes ANSI cyan and its value receives the
-ANSI dark gray background. F5 tests, F6 connects, F2 or Ctrl+S saves, Esc cancels and F8
-cancels an active test. The action strip and contextual help remain explicit.
+ANSI dark gray background. F5 tests, F6 connects, F2 or Ctrl+S saves, Esc closes
+the form and F8 requests cancellation (Oracle connection setup may wait for its
+timeout). The action strip and contextual help remain explicit.
+While testing or connecting, the form replaces its contextual hint with an
+elapsed-time status. Validation errors and test outcomes appear in that same
+space; the global status line remains visible below the dialog. Saving closes
+the form and names the saved profile in the status line.
 
 ### Status, prompts and reference dialogs
 

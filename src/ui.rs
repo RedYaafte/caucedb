@@ -47,7 +47,11 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
         .map(|p| p.name.as_str())
         .unwrap_or("Disconnected");
     let state = if app.busy {
-        format!("RUNNING {:.1}s", app.started.elapsed().as_secs_f32())
+        format!(
+            "{} · {:.1}s",
+            app.working_label.unwrap_or("Working"),
+            app.started.elapsed().as_secs_f32()
+        )
     } else if app.pending {
         "TRANSACTION · CHECK / COMMIT / ROLLBACK".into()
     } else {
@@ -80,26 +84,27 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
     let status = format!(" {}{}", if app.error { "ERROR · " } else { "" }, app.status);
     frame.render_widget(
         Paragraph::new(status)
-            .style(Style::default().fg(if app.error { ERROR } else { MUTED }))
+            .style(Style::default().fg(if app.error { ERROR } else { FG }))
             .wrap(Wrap { trim: false }),
         layout[2],
     );
-    let keys =
-        if let Some(modal) = &app.modal {
-            match modal {
-                Modal::Form(_) => " PgUp/PgDn Section · Tab Field · Ctrl+U Clear · F8 Cancel test",
-                Modal::Help | Modal::Cell(_) => " ↑↓ / PgUp/PgDn Scroll · Esc Close",
-                Modal::Prompt(_, _) => " Enter Apply · Esc Cancel · Ctrl+U Clear",
-                Modal::Confirm(_, _) => " y Confirm · n / Esc Cancel",
+    let keys = if let Some(modal) = &app.modal {
+        match modal {
+            Modal::Form(_) => " PgUp/PgDn Section · Tab Field · Ctrl+U Clear · F8 Request cancel",
+            Modal::Help | Modal::Cell(_) => " ↑↓ / PgUp/PgDn Scroll · Esc Close",
+            Modal::Prompt(_, _) => " Enter Apply · Esc Cancel · Ctrl+U Clear",
+            Modal::Confirm(_, _) => " y Confirm · n / Esc Cancel",
+        }
+    } else {
+        match app.focus {
+            0 => " n New   e Edit   Enter Connect   Tab Panel   F1 Help   Ctrl+Q Quit",
+            1 => {
+                " / Filter   Enter Columns   2 Keys   3 Indexes   4 Source   p Preview   F3 Schema"
             }
-        } else {
-            match app.focus {
-        0 => " n New   e Edit   Enter Connect   Tab Panel   F1 Help   Ctrl+Q Quit",
-        1 => " / Filter   Enter Columns   2 Keys   3 Indexes   4 Source   p Preview   F3 Schema",
-        2 => " F5 Statement/selection   F6 Script   Ctrl+S Save   Ctrl+O Open   Tab Results",
-        _ => " ↑↓ Rows   ←→ Columns   Enter Cell   [ ] Results   F7 Commit   F9 Rollback",
-    }
-        };
+            2 => " F5 Statement/selection   F6 Script   Ctrl+S Save   Ctrl+O Open   Tab Results",
+            _ => " ↑↓ Rows   ←→ Columns   Enter Cell   [ ] Results   F7 Commit   F9 Rollback",
+        }
+    };
     frame.render_widget(
         Paragraph::new(keys).style(Style::default().bg(PANEL).fg(ACCENT)),
         layout[3],
@@ -327,7 +332,7 @@ fn draw_modal(frame: &mut Frame, app: &App) {
             let parts = Layout::vertical([
                 Constraint::Length(if compact { 1 } else { 2 }),
                 Constraint::Min(2),
-                Constraint::Length(if compact { 1 } else { 3 }),
+                Constraint::Length(if compact { 2 } else { 3 }),
                 Constraint::Length(2),
             ])
             .split(inner);
@@ -400,9 +405,32 @@ fn draw_modal(frame: &mut Frame, app: &App) {
             } else {
                 "Tab/↑↓ Field · PgUp/PgDn Section · ←→ Option · Ctrl+U Clear\nPassword is masked and saved only in the system keyring."
             };
+            let feedback = if app.busy
+                && matches!(
+                    app.working_label,
+                    Some("Testing Oracle connection" | "Connecting to Oracle")
+                ) {
+                Some((
+                    format!(
+                        "{}… {:.1}s · please wait\nF8 requests cancellation; setup may wait for its timeout.",
+                        app.working_label.unwrap_or("Working"),
+                        app.started.elapsed().as_secs_f32()
+                    ),
+                    AMBER,
+                ))
+            } else if form.action_attempted {
+                Some((
+                    format!("{}{}", if app.error { "ERROR · " } else { "" }, app.status),
+                    if app.error { ERROR } else { ACCENT },
+                ))
+            } else {
+                None
+            };
             frame.render_widget(
-                Paragraph::new(hint)
-                    .style(Style::default().fg(MUTED))
+                Paragraph::new(feedback.as_ref().map_or(hint, |(text, _)| text.as_str()))
+                    .style(
+                        Style::default().fg(feedback.as_ref().map_or(MUTED, |(_, color)| *color)),
+                    )
                     .wrap(Wrap { trim: false }),
                 parts[2],
             );
@@ -558,6 +586,20 @@ const HELP:&str="\n  GLOBAL\n  Tab / Shift+Tab   Switch panel (narrow terminals 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+
+    fn rendered_text(app: &mut App, width: u16, height: u16) -> String {
+        let backend = ratatui::backend::TestBackend::new(width, height);
+        let mut terminal = Terminal::new(backend).unwrap();
+        terminal.draw(|frame| draw(frame, app)).unwrap();
+        terminal
+            .backend()
+            .buffer()
+            .content()
+            .iter()
+            .map(|cell| cell.symbol())
+            .collect()
+    }
     #[test]
     fn renders_all_sizes_and_forms() {
         for (w, h) in [(120, 40), (80, 24), (45, 14), (30, 10)] {
@@ -595,5 +637,40 @@ mod tests {
         assert!(rendered.contains("Keyboard reference"));
         assert!(rendered.contains("GLOBAL"));
         assert!(rendered.contains("F5 / F6"));
+    }
+
+    #[test]
+    fn connection_form_shows_validation_progress_and_result() {
+        let mut app = App::new(crate::config::Config::default(), "unused".into());
+        app.modal = Some(Modal::Form(Box::new(crate::app::ConnectionForm::new(
+            crate::config::Profile::default(),
+        ))));
+        for action in [KeyCode::F(5), KeyCode::F(6), KeyCode::F(2)] {
+            app.key(KeyEvent::new(action, KeyModifiers::NONE));
+            assert!(app.error);
+            for (width, height) in [(100, 32), (45, 14)] {
+                let rendered = rendered_text(&mut app, width, height);
+                assert_eq!(
+                    rendered.matches("ERROR · Username is required").count(),
+                    2,
+                    "the form and status must both show the error at {width}x{height}"
+                );
+            }
+        }
+
+        app.error = false;
+        app.busy = true;
+        app.working_label = Some("Testing Oracle connection");
+        assert!(rendered_text(&mut app, 100, 32).contains("Testing Oracle connection"));
+        assert!(rendered_text(&mut app, 100, 32).contains("please wait"));
+        assert!(rendered_text(&mut app, 45, 14).contains("Testing Oracle connection"));
+
+        app.working_label = Some("Connecting to Oracle");
+        assert!(rendered_text(&mut app, 100, 32).contains("Connecting to Oracle"));
+
+        app.busy = false;
+        app.working_label = None;
+        app.message("Test passed · authenticated query and ping", false);
+        assert!(rendered_text(&mut app, 100, 32).contains("Test passed"));
     }
 }
