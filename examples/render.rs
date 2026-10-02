@@ -105,6 +105,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }];
     app.status = "Synthetic fixture · 3 rows · F7 Commit / F9 Rollback".into();
     capture(&mut app, 120, 40, "workbench")?;
+    app.focus = 0;
+    capture(&mut app, 120, 40, "workbench-connections")?;
+    app.focus = 1;
+    capture(&mut app, 120, 40, "workbench-explorer")?;
+    app.focus = 2;
     capture(&mut app, 80, 24, "narrow")?;
     for section in 0..4 {
         let mut form = ConnectionForm::new(p.clone());
@@ -114,5 +119,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         capture(&mut app, 120, 40, &format!("form-{section}"))?;
     }
     capture(&mut app, 60, 20, "form-small")?;
+    capture(&mut app, 45, 14, "form-minimum")?;
     Ok(())
 }

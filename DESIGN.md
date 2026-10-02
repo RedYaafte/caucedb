@@ -1,222 +1,126 @@
 ---
 name: CauceDB
-description: Herdr-inspired keyboard workbench for Oracle sessions and SQL files.
+description: Minimal, keyboard-first Oracle workbench for the terminal.
 colors:
-  background: "terminal-default-background"
-  panel: "ansi-dark-gray"
-  foreground: "terminal-default-foreground"
-  muted: "ansi-dark-gray"
-  accent: "ansi-cyan"
-  amber: "ansi-yellow"
-  border: "ansi-dark-gray"
-  error: "ansi-red"
+  background: "#1b1e1f"
+  surface: "#25292a"
+  selected: "#35312d"
+  foreground: "#c8c0ae"
+  foreground_bright: "#f1e9d8"
+  muted: "#a99f90"
+  accent: "#e2a35f"
+  border: "#77746c"
+  border_soft: "#555650"
+  error: "#f18472"
 components:
-  panel:
+  workspace:
     backgroundColor: "{colors.background}"
     textColor: "{colors.foreground}"
   selected-item:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.accent}"
-  active-field:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.foreground}"
-  editor-cursor:
+    backgroundColor: "{colors.selected}"
+    textColor: "{colors.foreground_bright}"
+  focused-item:
     backgroundColor: "{colors.accent}"
     textColor: "{colors.background}"
+  active-tab:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.background}"
+  result-grid:
+    borderColor: "{colors.border}"
   key-strip:
-    backgroundColor: "{colors.panel}"
-    textColor: "{colors.accent}"
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.foreground}"
 ---
 
 # Design System: CauceDB
 
-## Overview
+## Direction
 
-**Creative North Star: "Herdr-inspired Oracle workbench"**
+The approved [Reference / Workspace proposal](docs/proposals/minimal-reference/01-reference-workspace.png)
+replaces the earlier four-box, terminal-palette presentation. The application
+keeps four logical focus targets (Connections, Explorer, SQL editor, Results),
+but the wide layout has one quiet sidebar and one shared editor/results frame.
+The UI is terminal-native: cells and the terminal's monospace font establish
+geometry. No desktop window controls, wallpaper, web CSS or animation are used.
 
-A dense, keyboard-operated terminal workspace that inherits the terminal's
-active OS theme. Default terminal surfaces and text, ANSI focus and yellow
-session state organize connections,
-objects, editable SQL and results. The approved visual direction is recorded
-in PRODUCT.md and docs/surface.md.
+This is an **Operate** surface. Color directs attention to the active SQL tab,
+focused pane and actionable shortcuts; it does not decorate every label.
+The fixed RGB palette is intentional, so appearance is predictable even when
+the terminal's ANSI palette differs. The user chose this visual direction after
+reviewing both terminal-inherited and Black Ember proposals, then approved the
+Black Ember gold accent in a preview of the actual TUI.
 
-This document describes the implemented Ratatui interface in src/ui.rs and
-src/app.rs. Terminal cells determine geometry; the terminal owns the font.
-No browser styling, raster assets or animation are part of the interface.
+## Color roles and contrast
 
-**Key Characteristics:**
+| Role | Value | Use |
+| --- | --- | --- |
+| Canvas | `#1b1e1f` | Main terminal surface |
+| Surface | `#25292a` | Result headers and key strip |
+| Selected | `#35312d` | Current connection, object and result row |
+| Body | `#c8c0ae` | SQL, data and ordinary copy |
+| Bright | `#f1e9d8` | Selected text and major labels |
+| Muted | `#a99f90` | Supporting labels and metadata |
+| Accent | `#e2a35f` | Active tab, focus and SQL commands |
+| Grid | `#77746c` | Row and column rules |
+| Soft rule | `#555650` | Structural frame and dividers |
+| Error | `#f18472` | Error status with an explicit prefix |
 
-- Four numbered panels with contextual keyboard guidance.
-- ANSI cyan focus, selected rows and active tabs against the terminal canvas.
-- Adaptive single-panel presentation and compact, scrolling connection forms.
-- Persistent session, execution and transaction feedback.
+Body text is approximately 9.27:1 against the canvas; muted text is 6.43:1;
+grid rules are 3.59:1. The active tab pairs dark text with the gold fill at
+approximately 7.70:1. Exact results depend on terminal rendering.
 
-## Colors
+## Layout and behavior
 
-The palette is delegated to the terminal. `Reset` inherits the user's default
-foreground/background, while ANSI named colors resolve through the terminal's
-configured OS theme. No RGB values are embedded in the UI.
+At 90 × 24 cells and above, the sidebar is about one fifth of the terminal,
+clamped to 24–30 columns. It shows connections, the current schema's objects
+and, when height permits, open SQL files. The right workspace has one border,
+document tabs, an editor region and a results region separated by one rule.
+The editor takes about 48% of the space below the tabs. A single status row and
+contextual key strip follow the workspace.
 
-### Primary
+Below 90 × 24, the existing one-panel-at-a-time mode remains. Tab and
+Shift+Tab cycle the four logical targets. Below 45 × 14, the resize notice
+replaces the workbench. Modals remain centered and resize with the terminal.
 
-- **ANSI cyan (`accent`):** focused borders and titles, selected list entries,
-  active tabs, result headers, keyboard actions and recognized SQL keywords.
-  The editor cursor reverses foreground and background using this accent.
+The sidebar deliberately omits per-object boxes and repeated type subtitles.
+The saved connection and current object have selected rows. A selected row is
+gold with dark text only while its section receives keyboard focus; otherwise
+it stays neutral. Section titles follow the same focus rule. The Files list
+mirrors the active SQL document and uses the gold focused row when the editor
+has focus; it is not a separate Tab target. Long lists, including Files, follow
+selection so the active item remains visible. The open documents appear in
+tabs; the sidebar repeats their names only when enough height remains.
 
-### Secondary
+## SQL and results
 
-- **ANSI yellow (`amber`):** the top-line running timer, pending
-  transaction notice and autocommit-off state.
-- **ANSI red (`error`):** status text when an operation reports an error;
-  the same line also begins with `ERROR ·`.
+The active document tab is gold with dark text. `*` marks unsaved content.
+The editor uses warm body text, muted line numbers, a gold cursor and SQL
+keyword highlighting. The focused SQL region is named and shows F5, F6 and
+Ctrl+S in its heading. Selection and cursor behavior remain those of
+`tui-textarea`.
 
-### Neutral
+Results use an explicit box-drawing grid: every visible column has a vertical
+rule, and every visible row has a horizontal rule. Headers sit on the raised
+surface, the selected row uses the selected surface, and the row/column position
+is also written in text. Column widths derive from the heading and a small
+sample of rows, capped so multiple columns can fit. Arrow-key column movement
+shifts the horizontal viewport; the selected row remains visible vertically.
+Cell content is sanitized to one line and clipped visually; Enter opens its
+full detail. `[ / ]` switches retained results.
 
-- **Terminal default (`background`):** canvas, panel bodies and inactive form
-  fields, inherited from the active terminal theme.
-- **ANSI dark gray (`panel`):** selected rows, cursor line, focused form values,
-  active tabs, table headers and keyboard strips.
-- **Terminal default (`foreground`):** ordinary content and input values.
-- **ANSI dark gray (`muted`):** inactive titles, labels, object types, line
-  numbers, empty-state guidance and ordinary status messages.
-- **ANSI dark gray (`border`):** unfocused panel outlines.
+## Forms, status and keys
 
-The exact appearance changes with the user's terminal theme, including light
-and dark OS schemes. ANSI colors are semantic roles, not fixed visual values.
+The connection form retains Details, Advanced, User info and Proxy User with
+its existing keyboard flow. Focused fields and tabs use gold; passwords stay
+masked. Test and connection progress, errors and results are always written as
+text, not conveyed by color alone. F1 opens help; the bottom strip names F1
+and the transaction keys while no modal is open. F10 still opens message and
+execution history.
 
-**The Focus Rule.** Focus changes the panel border and title together. Selection
-inside a panel also uses a tonal background; ANSI cyan alone does not identify which
-panel receives keys.
+## Boundaries
 
-## Typography
-
-The terminal supplies one monospace font and one cell size. There are no bundled
-fonts or application-controlled font sizes, line heights or tracking values.
-
-- **Identity:** `CAUCEDB /` uses bold ANSI cyan on the session line.
-- **Panel titles:** numbered, single-line labels embedded in borders; ANSI cyan when
-  focused and muted otherwise.
-- **Body and values:** ordinary pale text; labels and supporting copy are muted.
-- **Editor:** muted line numbers, a highlighted cursor line and ANSI cyan SQL keywords.
-  Indentation uses a tab length of four. Syntax coloring preserves editor geometry
-  and the cursor background.
-- **State markers:** `›` marks list selection, `●` marks the connected profile,
-  and `*` marks a modified document. These markers supplement color.
-
-## Layout
-
-All dimensions below are terminal columns or rows, never CSS pixels.
-
-The shell reserves two rows for session identity, a flexible work area, two rows
-for status and one bottom row for contextual keys. At widths of at least 90 and
-heights of at least 24, the work area shows all four panels. The left column is
-one quarter of the terminal width, clamped to 24–34 columns; Connections takes
-eight rows and Explorer fills the remainder. On the right, SQL editor and Results
-split the available height 52%/48%. Document tabs occupy one row above the editor.
-
-Below either full-layout threshold, only the focused panel occupies the work
-area. Tab and Shift+Tab continue cycling through all four panels. Below 45 columns
-or 14 rows, a resize notice replaces the workbench and names Ctrl+Q and Esc.
-
-Dialogs are centered within the terminal area above the three status/help rows,
-with at least one cell of surrounding margin. Their requested width is 90;
-requested heights are 28 for the connection form and help, 26 for cell detail,
-and 16 for prompts and confirmations. Dimensions shrink to the available area.
-
-The connection form becomes compact when its inner width is below 80 or its
-inner height below 22. Each field occupies two rows. Labels use up to 29 columns,
-capped at half the field width; values fill the remainder. The visible field
-window follows selection. Compact mode reduces tab and hint space while keeping
-the two-row action area. Long input values show their trailing characters using
-terminal display width.
-
-## Elevation & Depth
-
-Depth is flat and tonal. There are no shadows, gradients or animated transitions.
-Dialogs clear and redraw their rectangle over the workbench, using the same
-terminal-default background and an ANSI accented border. ANSI dark gray marks active content within
-the deeper canvas.
-
-## Shapes
-
-Panels and dialogs use single-line rectangular terminal borders with square
-corners. Titles have one space on either side. Dividers, border characters and
-aligned cells supply structure; there are no rounded cards or graphical buttons.
-Boolean fields display `[x]` or `[ ]`, option fields append `‹ ›`, and focused
-text fields append `▏`. Passwords display a bullet per character.
-
-## Components
-
-### Workbench panels and lists
-
-Connections and Explorer use stateful lists with a `› ` selection prefix and
-ANSI cyan text on the ANSI dark gray selection background. Explorer objects occupy two
-lines: name, then muted lowercase type. Empty panels state the next available
-action, including `n` for a new connection and connection guidance for Explorer.
-
-### SQL documents
-
-Document tabs show an ordinal, filename (or Untitled.sql) and dirty marker. The
-active tab uses ANSI cyan on ANSI dark gray; tabs have vertical-line separators.
-Ctrl+Left/Right changes documents. The editor receives its distinctive cursor
-only when focused with no dialog open. F5 executes a statement or selection;
-F6 executes the file. Ctrl+S saves; Ctrl+O opens a file.
-
-### Results table
-
-Headers use ANSI cyan on ANSI dark gray; selected rows use ANSI dark gray. Column spacing
-is two cells, with a minimum width of 16 per visible column. The viewport chooses
-at least one column from the available width, starting at the selected column.
-The bottom border reports row and column position and `LIMIT REACHED` when
-applicable. Multiline cell content becomes a single table line; Enter opens
-wrapped, scrollable detail. Arrow keys navigate, PgUp/PgDn move 20 rows, and
-brackets switch result sets. Empty results explain F5 and F6.
-
-### Connection form
-
-The four section tabs are Details, Advanced, User info and Proxy User. Connection
-Name and Connection Type belong to every section's field list. Details contains
-host, port, address type, service/SID and protocol. Advanced contains descriptor,
-wallet, timeouts and row limit. User info contains authentication, role, target
-username, password and password persistence. Proxy User contains its enable
-toggle and credentials.
-
-PgUp/PgDn changes sections; Tab/Shift+Tab or Up/Down cycles fields. Left/Right,
-Space or Enter changes an option. Ctrl+U clears text, and Backspace removes the
-last character. The focused label becomes ANSI cyan and its value receives the
-ANSI dark gray background. F5 tests, F6 connects, F2 or Ctrl+S saves, Esc closes
-the form and F8 requests cancellation (Oracle connection setup may wait for its
-timeout). The action strip and contextual help remain explicit.
-While testing or connecting, the form replaces its contextual hint with an
-elapsed-time status. Validation errors and test outcomes appear in that same
-space; the global status line remains visible below the dialog. Saving closes
-the form and names the saved profile in the status line.
-
-### Status, prompts and reference dialogs
-
-The top line names the active connection or Disconnected, followed by running
-elapsed time, a pending-transaction notice or AUTOCOMMIT OFF. The lower status
-area wraps messages; errors use ANSI red and an explicit prefix. F7 commits and F9
-rolls back. Contextual bottom hints change with panel and dialog state.
-
-Text prompts show purpose-specific guidance and Enter/Apply, Esc/Cancel and
-Ctrl+U/Clear. Confirmations use `y` to confirm and `n` or Esc to cancel. Help and
-detail dialogs wrap and scroll with arrows or page keys; Esc closes them.
-F1 opens keyboard help and F10 opens messages, errors and execution history.
-
-## Do's and Don'ts
-
-### Do:
-
-- Do preserve terminal-cell geometry and terminal-owned monospace typography.
-- Do change focused borders and titles together and keep keyboard hints contextual.
-- Do keep the four panels reachable when the terminal shows only one at a time.
-- Do pair meaningful color with labels, position or state markers.
-- Do keep the selected form field visible and passwords masked.
-
-### Don't:
-
-- Don't introduce browser components, CSS dimensions or raster assets into this native interface.
-- Don't replace the approved bordered workbench with a different visual world.
-- Don't hide execution errors or transaction state behind color alone.
-- Don't add invented font scales, rounded corners, shadows or motion tokens.
+- Preserve terminal-owned typography and compact navigation.
+- Do not reintroduce separate boxed cards for each workbench section.
+- Keep table rules legible; do not use the soft structural border for data.
+- Keep essential state in labels or markers as well as color.
+- Generated screenshots use synthetic data only.

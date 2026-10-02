@@ -2,15 +2,18 @@
 
 CauceDB is a keyboard-first database workbench for the terminal, written in Rust.
 This **0.1 preview supports Oracle only**. PostgreSQL, MySQL and SQLite are
-future goals, not currently supported backends. The interface uses the terminal's
-own color palette and keeps connections, object browsing, SQL files and results
-in one workspace.
+future goals, not currently supported backends. The Reference / Workspace theme
+uses a fixed, high-contrast charcoal and Black Ember gold palette and keeps
+connections, object browsing, SQL files and results in one workspace.
 
 This is an early preview intended for development and QA evaluation. Review SQL
 before execution and use least-privilege accounts. Production use has not been
 validated.
 
-<img width="1887" height="1133" alt="caucedb" src="https://github.com/user-attachments/assets/6f6b3dab-74a6-434b-ba1e-a51c55ed4ba9" />
+![CauceDB Reference / Workspace, rendered with synthetic data](docs/screenshots/reference-workspace.png)
+
+The screenshot is a synthetic rendering of the current Ratatui interface; it
+contains no database or user data.
 
 
 ## Linux installation
@@ -126,8 +129,10 @@ In **Explorer**, `/` filters, `r` reloads, Enter/`1` shows columns, `2` keys,
 arrows navigate, PgUp/PgDn scroll, Enter opens a cell, and `[`/`]` switch result
 sets. Help and details scroll with arrows.
 
-At 90 × 24 terminal cells or larger, all four panels are shown. Smaller
-terminals show the focused panel; the minimum supported size is 45 × 14. Some
+At 90 × 24 terminal cells or larger, the sidebar and shared SQL/results workspace
+are shown together. Smaller terminals show the focused panel; the minimum
+supported size is 45 × 14. Results have row and column rules; arrow-key selection
+remains visible while the table scrolls. Some
 terminal emulators reserve function keys or Ctrl+S; adjust terminal bindings if
 needed.
 

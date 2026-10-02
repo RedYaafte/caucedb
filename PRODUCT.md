@@ -20,6 +20,8 @@ execution, results and explicit transactions. Docker is authorized for testing.
 Full SQL*Plus command emulation is outside the MVP.
 
 ## Brand Commitments
-Herdr-inspired keyboard navigation, discrete borders, clear focused panels,
-connections/explorer on the left, SQL editor and results on the right.
-This structure and implementation plan were approved by the user.
+Keyboard-first navigation. The user selected Reference / Workspace: a minimal
+charcoal terminal surface with a restrained Black Ember gold accent, one sidebar
+for connections and objects, and one shared SQL editor/results workspace. Grid rules
+must make result rows and columns identifiable. Narrow terminals still expose
+the four logical focus targets through Tab and Shift+Tab.

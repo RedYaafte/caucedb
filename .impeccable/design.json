@@ -1,44 +1,44 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-09T20:24:45Z",
+  "generatedAt": "2026-10-02T01:14:36Z",
   "title": "Design System: CauceDB",
   "extensions": {
     "breakpoints": [
       { "name": "minimum-width", "value": "45 terminal columns" },
       { "name": "minimum-height", "value": "14 terminal rows" },
-      { "name": "four-panel-width", "value": "90 terminal columns" },
-      { "name": "four-panel-height", "value": "24 terminal rows" },
+      { "name": "shared-workspace-width", "value": "90 terminal columns" },
+      { "name": "shared-workspace-height", "value": "24 terminal rows" },
       { "name": "expanded-form-inner-width", "value": "80 terminal columns" },
       { "name": "expanded-form-inner-height", "value": "22 terminal rows" }
     ]
   },
   "components": [],
   "narrative": {
-    "northStar": "Herdr-inspired Oracle workbench",
-    "overview": "A dense, keyboard-operated terminal workspace that inherits the active OS/terminal theme. Reset delegates surfaces and ordinary text to the terminal; ANSI cyan, yellow, red and dark gray provide semantic focus, transaction, error and structure roles. Discrete borders organize connections, objects, editable SQL and results. The approved visual direction is recorded in PRODUCT.md and docs/surface.md.\n\nThis document describes the implemented Ratatui interface in src/ui.rs and src/app.rs. Terminal cells determine geometry; the terminal owns the font. No browser styling, raster assets or animation are part of the interface.",
+    "northStar": "Reference / Workspace: one quiet Oracle workbench",
+    "overview": "A minimal, keyboard-operated terminal workspace with a fixed charcoal and Black Ember gold RGB palette. A compact sidebar holds connections, schema objects and open files; one shared frame holds document tabs, SQL editor and gridded results. The user approved this replacement direction after reviewing static proposals and the gold accent in a real-TUI preview. Terminal cells determine geometry and the terminal owns the font. No browser styling, desktop chrome or animation is part of the interface.",
     "keyCharacteristics": [
-      "Four numbered panels with contextual keyboard guidance.",
-      "ANSI cyan focus, selected rows and active tabs against the terminal canvas.",
+      "One sidebar and one shared editor/results frame on wide terminals.",
+      "Gold active tabs and focused sidebar rows, warm readable text, and explicit result-grid rules.",
       "Adaptive single-panel presentation and compact, scrolling connection forms.",
       "Persistent session, execution and transaction feedback."
     ],
     "rules": [
       {
         "name": "The Focus Rule",
-        "body": "Focus changes the panel border and title together. Selection inside a panel also uses a tonal background; ANSI cyan alone does not identify which panel receives keys. Reset and ANSI named colors are resolved by the user's terminal palette.",
+        "body": "The active document tab uses gold fill with dark text. Focused Connections and Explorer selections, plus the active file while SQL Editor has focus, use the same gold fill; inactive selections and result rows stay tonal. Section headings follow focus. Row and column rules plus textual position keep dense result navigation legible without color alone.",
         "section": "colors"
       }
     ],
     "dos": [
       "Do preserve terminal-cell geometry and terminal-owned monospace typography.",
-      "Do change focused borders and titles together and keep keyboard hints contextual.",
+      "Do keep the active tab and focused work area recognizable while keeping keyboard hints contextual.",
       "Do keep the four panels reachable when the terminal shows only one at a time.",
       "Do pair meaningful color with labels, position or state markers.",
       "Do keep the selected form field visible and passwords masked."
     ],
     "donts": [
       "Don't introduce browser components, CSS dimensions or raster assets into this native interface.",
-      "Don't replace the approved bordered workbench with a different visual world.",
+      "Don't reintroduce separate boxed cards for every workbench section.",
       "Don't hide execution errors or transaction state behind color alone.",
       "Don't add invented font scales, rounded corners, shadows or motion tokens."
     ]

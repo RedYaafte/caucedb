@@ -1,17 +1,20 @@
 # Workbench
 
-Mode: Operate. Native terminal; no browser assets or raster mockups needed.
-The user's approved Herdr panel layout overrides alternate world selection.
-Concept seed 001067df ran degraded; no catalog boards were available.
+Mode: Operate. Native terminal. The user approved the
+[Reference / Workspace proposal](proposals/minimal-reference/01-reference-workspace.png)
+as the replacement visual direction for the existing workbench. The mockup is
+reference material; the rendered terminal cells are the implementation truth.
 
 ## Direction contract
-THESIS: A persistent Oracle session joins object inspection and editable SQL.
-OWN-WORLD: Terminal-default surface and text, ANSI cyan focus, ANSI yellow
-transaction state, ANSI red errors and ANSI dark-gray structure; single-line
-borders and aligned, labeled controls. Terminal-owned monospace and palette.
-STORY: Save a profile, test it, connect, inspect objects, execute SQL and review results.
-FIRST VIEWPORT: Left connections/objects, right document tabs/editor/results;
-bottom contextual keys. Empty state leads to New connection. Narrow terminals
-show the focused panel. Signature interaction: inspect an object then open its query.
-FORM: User-pinned Herdr workbench; seed 001067df superseded by approved structure.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+THESIS: One quiet workspace joins Oracle inspection, SQL editing and results.
+OWN-WORLD: Charcoal `#1b1e1f`, warm `#c8c0ae` text, muted `#a99f90`, Black Ember
+gold `#e2a35f` focus and focused sidebar selection, gray `#77746c` table rules.
+Inactive selections remain neutral; one main frame avoids stacked cards.
+STORY: Save and connect, inspect objects, edit or open SQL, execute, review and
+navigate results, then commit or roll back when needed.
+FIRST VIEWPORT: Compact connection/object/file rail on the left; active SQL tab,
+editor and gridded results share one frame on the right. Status and labeled keys
+stay at the bottom. Narrow terminals show the focused logical panel.
+FORM: User-selected Reference / Workspace proposal; no new concept roll needed.
+FINISH: Tested rendered cells at wide and narrow sizes, generated a synthetic
+screenshot and updated the design documentation.

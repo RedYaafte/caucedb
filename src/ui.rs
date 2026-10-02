@@ -2,22 +2,23 @@ use crate::app::{App, Modal, PromptKind};
 use ratatui::{prelude::*, widgets::*};
 use unicode_width::UnicodeWidthStr;
 
-// Inherit the user's terminal palette. `Reset` delegates background and
-// foreground to the active OS/terminal theme; semantic ANSI colors (cyan,
-// yellow, red and dark gray) are resolved by that same palette.
-pub const BG: Color = Color::Reset;
-pub const PANEL: Color = Color::DarkGray;
-pub const FG: Color = Color::Reset;
-pub const MUTED: Color = Color::DarkGray;
-pub const ACCENT: Color = Color::Cyan;
-pub const AMBER: Color = Color::Yellow;
-const BORDER: Color = Color::DarkGray;
-const ERROR: Color = Color::Red;
+// Reference / Workspace: a calm canvas, warm legible text and a single gold
+// action accent. RGB colors keep contrast stable across terminal palettes.
+pub const BG: Color = Color::Rgb(27, 30, 31);
+pub const PANEL: Color = Color::Rgb(53, 49, 45);
+pub const FG: Color = Color::Rgb(200, 192, 174);
+pub const MUTED: Color = Color::Rgb(169, 159, 144);
+pub const ACCENT: Color = Color::Rgb(226, 163, 95);
+const SURFACE: Color = Color::Rgb(37, 41, 42);
+const BRIGHT: Color = Color::Rgb(241, 233, 216);
+const BORDER: Color = Color::Rgb(119, 116, 108);
+const SOFT_BORDER: Color = Color::Rgb(85, 86, 80);
+const ERROR: Color = Color::Rgb(241, 132, 114);
 
 fn block(title: impl Into<String>, focused: bool) -> Block<'static> {
     Block::bordered()
         .title(format!(" {} ", title.into()))
-        .border_style(Style::default().fg(if focused { ACCENT } else { BORDER }))
+        .border_style(Style::default().fg(if focused { ACCENT } else { SOFT_BORDER }))
         .title_style(Style::default().fg(if focused { ACCENT } else { MUTED }))
         .style(Style::default().bg(BG).fg(FG))
 }
@@ -37,7 +38,7 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
     let layout = Layout::vertical([
         Constraint::Length(2),
         Constraint::Min(5),
-        Constraint::Length(2),
+        Constraint::Length(1),
         Constraint::Length(1),
     ])
     .split(area);
@@ -57,29 +58,47 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
     } else {
         "AUTOCOMMIT OFF".into()
     };
+    let compact_header = area.width < 70;
+    let connection_label = if compact_header && connection.chars().count() > 14 {
+        format!("{}…", connection.chars().take(13).collect::<String>())
+    } else {
+        connection.to_owned()
+    };
+    let state_label = if compact_header {
+        if app.busy {
+            "WORKING"
+        } else if app.pending {
+            "TX PENDING"
+        } else {
+            "TX OFF"
+        }
+        .to_owned()
+    } else {
+        state
+    };
     frame.render_widget(
         Paragraph::new(Line::from(vec![
-            Span::styled(" CAUCEDB / ", Style::default().fg(ACCENT).bold()),
-            Span::raw(connection),
-            Span::styled(format!("   {state}"), Style::default().fg(AMBER)),
-        ])),
+            Span::styled(" ◇ CAUCEDB", Style::default().fg(BRIGHT).bold()),
+            Span::styled(
+                if compact_header { " / " } else { "   /   " },
+                Style::default().fg(MUTED),
+            ),
+            Span::styled(connection_label, Style::default().fg(FG)),
+            Span::styled(format!("  {state_label}"), Style::default().fg(ACCENT)),
+        ]))
+        .style(Style::default().bg(BG)),
         layout[0],
     );
     if area.width < 90 || area.height < 24 {
         panel(frame, app, app.focus, layout[1]);
     } else {
         let cols = Layout::horizontal([
-            Constraint::Length((area.width / 4).clamp(24, 34)),
+            Constraint::Length((area.width / 5).clamp(24, 30)),
             Constraint::Min(40),
         ])
         .split(layout[1]);
-        let left = Layout::vertical([Constraint::Length(8), Constraint::Min(5)]).split(cols[0]);
-        let right = Layout::vertical([Constraint::Percentage(52), Constraint::Percentage(48)])
-            .split(cols[1]);
-        panel(frame, app, 0, left[0]);
-        panel(frame, app, 1, left[1]);
-        panel(frame, app, 2, right[0]);
-        panel(frame, app, 3, right[1]);
+        draw_sidebar(frame, app, cols[0]);
+        draw_workspace(frame, app, cols[1]);
     }
     let status = format!(" {}{}", if app.error { "ERROR · " } else { "" }, app.status);
     frame.render_widget(
@@ -95,23 +114,256 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
             Modal::Prompt(_, _) => " Enter Apply · Esc Cancel · Ctrl+U Clear",
             Modal::Confirm(_, _) => " y Confirm · n / Esc Cancel",
         }
+    } else if area.width < 60 {
+        " Tab/Shift+Tab Panel   F1 Help"
+    } else if area.width < 90 || area.height < 24 {
+        match app.focus {
+            0 => " Tab/Shift+Tab Panel   n New   Enter Connect   F1 Help",
+            1 => " Tab/Shift+Tab Panel   / Filter   Enter Inspect   F1 Help",
+            2 => " Tab/Shift+Tab Panel   F5 Statement   F6 Script   F1 Help",
+            _ => " Tab/Shift+Tab Panel   ↑↓ Rows   ←→ Columns   F1 Help",
+        }
     } else {
         match app.focus {
-            0 => " n New   e Edit   Enter Connect   Tab Panel   F1 Help   Ctrl+Q Quit",
+            0 => " n New   e Edit   Enter Connect   F7 Commit   F9 Rollback   F1 Help",
             1 => {
-                " / Filter   Enter Columns   2 Keys   3 Indexes   4 Source   p Preview   F3 Schema"
+                " / Filter   Enter Columns   p Preview   F3 Schema   F7 Commit   F9 Rollback   F1 Help"
             }
-            2 => " F5 Statement/selection   F6 Script   Ctrl+S Save   Ctrl+O Open   Tab Results",
-            _ => " ↑↓ Rows   ←→ Columns   Enter Cell   [ ] Results   F7 Commit   F9 Rollback",
+            2 => " F5 Statement   F6 Script   Ctrl+S Save   Ctrl+O Open   F7 Commit   F9 Rollback   F1 Help",
+            _ => " ↑↓ Rows   ←→ Columns   Enter Cell   [ ] Results   F7 Commit   F9 Rollback   F1 Help",
         }
     };
     frame.render_widget(
-        Paragraph::new(keys).style(Style::default().bg(PANEL).fg(ACCENT)),
+        Paragraph::new(keys).style(Style::default().bg(SURFACE).fg(FG)),
         layout[3],
     );
     if app.modal.is_some() {
         draw_modal(frame, app);
     }
+}
+
+fn label(frame: &mut Frame, area: Rect, text: impl Into<String>, style: Style) {
+    if area.width > 0 && area.height > 0 {
+        frame.render_widget(Paragraph::new(text.into()).style(style), area);
+    }
+}
+
+fn rule(frame: &mut Frame, x: u16, y: u16, width: u16, color: Color) {
+    let buffer = frame.buffer_mut();
+    for dx in 0..width {
+        buffer[(x + dx, y)].set_symbol("─").set_fg(color);
+    }
+}
+
+fn sidebar_selection(selected: bool, focused: bool) -> Style {
+    Style::default()
+        .bg(if selected {
+            if focused {
+                ACCENT
+            } else {
+                PANEL
+            }
+        } else {
+            BG
+        })
+        .fg(if selected {
+            if focused {
+                BG
+            } else {
+                BRIGHT
+            }
+        } else {
+            FG
+        })
+}
+
+fn draw_sidebar(frame: &mut Frame, app: &App, area: Rect) {
+    frame.render_widget(Block::default().style(Style::default().bg(BG)), area);
+    if area.width < 3 || area.height < 12 {
+        return;
+    }
+    let x = area.x + 1;
+    let width = area.width.saturating_sub(3);
+    label(
+        frame,
+        Rect::new(x, area.y, width, 1),
+        "Connections",
+        Style::default()
+            .fg(if app.focus == 0 { ACCENT } else { MUTED })
+            .bold(),
+    );
+    let profile_rows = 3usize.min(app.config.connections.len().max(1));
+    let profile_start = app
+        .profiles_index
+        .saturating_sub(profile_rows.saturating_sub(1));
+    if app.config.connections.is_empty() {
+        label(
+            frame,
+            Rect::new(x, area.y + 2, width, 1),
+            "n  New connection",
+            Style::default().fg(if app.focus == 0 { ACCENT } else { FG }),
+        );
+    } else {
+        for (offset, profile) in app
+            .config
+            .connections
+            .iter()
+            .enumerate()
+            .skip(profile_start)
+            .take(profile_rows)
+        {
+            let y = area.y + 2 + (offset - profile_start) as u16;
+            let selected = offset == app.profiles_index;
+            let active = app.connected.as_ref().is_some_and(|c| c.id == profile.id);
+            let marker = if selected && app.focus == 0 {
+                "›"
+            } else if active {
+                "●"
+            } else {
+                " "
+            };
+            let style = sidebar_selection(selected, app.focus == 0);
+            label(
+                frame,
+                Rect::new(x, y, width, 1),
+                format!("{marker} {}", profile.name),
+                style,
+            );
+        }
+        if app.config.connections.len() == 1 {
+            let status = if app.connected.is_some() {
+                "connected"
+            } else {
+                "saved"
+            };
+            label(
+                frame,
+                Rect::new(x, area.y + 4, width, 1),
+                format!("Oracle · {status}"),
+                Style::default().fg(MUTED),
+            );
+        }
+    }
+    let divider_y = area.y + 6;
+    rule(frame, x, divider_y, width, SOFT_BORDER);
+    let schema = if app.schema.is_empty() {
+        "Explorer".to_owned()
+    } else {
+        format!("SCHEMA / {}", app.schema)
+    };
+    label(
+        frame,
+        Rect::new(x, divider_y + 2, width, 1),
+        schema,
+        Style::default()
+            .fg(if app.focus == 1 { ACCENT } else { MUTED })
+            .bold(),
+    );
+    let files_space = if area.height >= 28 { 7 } else { 2 };
+    let objects_y = divider_y + 4;
+    let objects_bottom = area.bottom().saturating_sub(files_space);
+    let capacity = objects_bottom.saturating_sub(objects_y) as usize;
+    let objects = app.filtered_objects();
+    if objects.is_empty() {
+        let hint = if app.connected.is_none() {
+            "Connect to inspect"
+        } else {
+            "No matching objects"
+        };
+        label(
+            frame,
+            Rect::new(x, objects_y, width, 1),
+            hint,
+            Style::default().fg(if app.focus == 1 { ACCENT } else { MUTED }),
+        );
+    } else if capacity > 0 {
+        let start = app.object_index.saturating_sub(capacity.saturating_sub(1));
+        for (index, object) in objects.iter().enumerate().skip(start).take(capacity) {
+            let y = objects_y + (index - start) as u16;
+            let selected = index == app.object_index;
+            let style = sidebar_selection(selected, app.focus == 1);
+            let marker = if selected && app.focus == 1 {
+                "›"
+            } else {
+                " "
+            };
+            label(
+                frame,
+                Rect::new(x, y, width, 1),
+                format!("{marker} {}", object.name),
+                style,
+            );
+        }
+    }
+    if area.height >= 28 {
+        let y = area.bottom() - 6;
+        rule(frame, x, y, width, SOFT_BORDER);
+        label(
+            frame,
+            Rect::new(x, y + 1, width, 1),
+            "FILES",
+            Style::default()
+                .fg(if app.focus == 2 { ACCENT } else { MUTED })
+                .bold(),
+        );
+        let file_start = app.doc.saturating_sub(2);
+        for (index, doc) in app.docs.iter().enumerate().skip(file_start).take(3) {
+            let selected = index == app.doc;
+            let style = sidebar_selection(selected, app.focus == 2);
+            label(
+                frame,
+                Rect::new(x, y + 2 + (index - file_start) as u16, width, 1),
+                format!(
+                    "{} {}",
+                    if selected && app.focus == 2 {
+                        "›"
+                    } else {
+                        " "
+                    },
+                    doc.title()
+                ),
+                style,
+            );
+        }
+    }
+}
+
+fn draw_workspace(frame: &mut Frame, app: &mut App, area: Rect) {
+    let outer = Block::bordered()
+        .border_style(Style::default().fg(SOFT_BORDER))
+        .style(Style::default().bg(BG));
+    let inner = outer.inner(area);
+    frame.render_widget(outer, area);
+    if inner.width < 3 || inner.height < 9 {
+        return;
+    }
+    let tabs = app
+        .docs
+        .iter()
+        .enumerate()
+        .map(|(i, doc)| Line::from(format!("{} {}", i + 1, doc.title())))
+        .collect::<Vec<_>>();
+    frame.render_widget(
+        Tabs::new(tabs)
+            .select(app.doc)
+            .style(Style::default().fg(MUTED).bg(BG))
+            .highlight_style(Style::default().fg(BG).bg(ACCENT).bold())
+            .divider(" "),
+        Rect::new(inner.x, inner.y, inner.width, 1),
+    );
+    let remaining = inner.height - 1;
+    let editor_height = (remaining * 48 / 100).clamp(4, remaining.saturating_sub(5));
+    let editor = Rect::new(inner.x, inner.y + 1, inner.width, editor_height);
+    draw_editor(frame, app, editor, false);
+    let separator_y = editor.bottom();
+    rule(frame, inner.x, separator_y, inner.width, SOFT_BORDER);
+    let results = Rect::new(
+        inner.x,
+        separator_y + 1,
+        inner.width,
+        inner.bottom().saturating_sub(separator_y + 1),
+    );
+    draw_results(frame, app, results, false);
 }
 fn panel(frame: &mut Frame, app: &mut App, index: usize, area: Rect) {
     match index {
@@ -138,7 +390,7 @@ fn panel(frame: &mut Frame, app: &mut App, index: usize, area: Rect) {
                 frame.render_stateful_widget(
                     List::new(items)
                         .block(b)
-                        .highlight_style(Style::default().bg(PANEL).fg(ACCENT))
+                        .highlight_style(sidebar_selection(true, app.focus == 0))
                         .highlight_symbol("› "),
                     area,
                     &mut state,
@@ -189,7 +441,7 @@ fn panel(frame: &mut Frame, app: &mut App, index: usize, area: Rect) {
                 frame.render_stateful_widget(
                     List::new(items)
                         .block(b)
-                        .highlight_style(Style::default().bg(PANEL).fg(ACCENT))
+                        .highlight_style(sidebar_selection(true, app.focus == 1))
                         .highlight_symbol("› "),
                     area,
                     &mut state,
@@ -198,101 +450,288 @@ fn panel(frame: &mut Frame, app: &mut App, index: usize, area: Rect) {
         }
         2 => {
             let parts = Layout::vertical([Constraint::Length(1), Constraint::Min(1)]).split(area);
-            let tabs: Vec<Line> = app
+            let tabs = app
                 .docs
                 .iter()
                 .enumerate()
                 .map(|(i, d)| Line::from(format!("{} {}", i + 1, d.title())))
-                .collect();
+                .collect::<Vec<_>>();
             frame.render_widget(
                 Tabs::new(tabs)
                     .select(app.doc)
                     .style(Style::default().fg(MUTED))
-                    .highlight_style(Style::default().fg(ACCENT).bg(PANEL))
-                    .divider("│"),
+                    .highlight_style(Style::default().fg(BG).bg(ACCENT).bold())
+                    .divider(" "),
                 parts[0],
             );
-            let focused = app.focus == 2 && app.modal.is_none();
-            let doc = &mut app.docs[app.doc];
-            doc.editor
-                .set_block(block("3  SQL editor  ·  Ctrl+←/→ tabs", focused));
-            doc.editor.set_style(Style::default().bg(BG).fg(FG));
-            doc.editor.set_cursor_line_style(Style::default().bg(PANEL));
-            doc.editor.set_cursor_style(if focused {
-                Style::default().fg(BG).bg(ACCENT)
-            } else {
-                Style::default()
-            });
-            frame.render_widget(&doc.editor, parts[1]);
-            // Color visible SQL tokens after the editor has applied viewport,
-            // selection and cursor backgrounds. Syntax never changes geometry.
-            highlight(
-                frame.buffer_mut(),
-                parts[1].inner(Margin {
-                    horizontal: 1,
-                    vertical: 1,
-                }),
+            draw_editor(frame, app, parts[1], true);
+        }
+        _ => draw_results(frame, app, area, true),
+    }
+}
+
+fn draw_editor(frame: &mut Frame, app: &mut App, area: Rect, bordered: bool) {
+    let inner = if bordered {
+        let b = block("SQL editor · Ctrl+←/→ tabs", app.focus == 2);
+        let inner = b.inner(area);
+        frame.render_widget(b, area);
+        inner
+    } else {
+        area
+    };
+    if inner.width < 3 || inner.height < 2 {
+        return;
+    }
+    label(
+        frame,
+        Rect::new(inner.x + 1, inner.y, inner.width.saturating_sub(2), 1),
+        "SQL EDITOR  ·  F5 Statement  F6 Script  Ctrl+S Save",
+        Style::default()
+            .fg(if app.focus == 2 { ACCENT } else { BRIGHT })
+            .bold(),
+    );
+    let edit_area = Rect::new(
+        inner.x + 1,
+        inner.y + 1,
+        inner.width.saturating_sub(2),
+        inner.height - 1,
+    );
+    let focused = app.focus == 2 && app.modal.is_none();
+    let doc = &mut app.docs[app.doc];
+    doc.editor.set_block(Block::default());
+    doc.editor.set_style(Style::default().bg(BG).fg(FG));
+    doc.editor.set_cursor_line_style(Style::default().bg(PANEL));
+    doc.editor.set_cursor_style(if focused {
+        Style::default().fg(BG).bg(ACCENT)
+    } else {
+        Style::default()
+    });
+    frame.render_widget(&doc.editor, edit_area);
+    // Syntax color follows the rendered viewport without changing geometry.
+    highlight(frame.buffer_mut(), edit_area);
+}
+
+fn draw_results(frame: &mut Frame, app: &App, area: Rect, bordered: bool) {
+    let inner = if bordered {
+        let b = block("Results", app.focus == 3);
+        let inner = b.inner(area);
+        frame.render_widget(b, area);
+        inner
+    } else {
+        area
+    };
+    if inner.width < 8 || inner.height < 3 {
+        return;
+    }
+    let title = app
+        .results
+        .get(app.result)
+        .map_or("RESULTS".to_owned(), |r| {
+            format!(
+                "RESULTS  {}/{}  ·  {} rows  ·  {} columns",
+                app.result + 1,
+                app.results.len(),
+                r.rows.len(),
+                r.columns.len()
+            )
+        });
+    label(
+        frame,
+        Rect::new(inner.x + 1, inner.y, inner.width.saturating_sub(2), 1),
+        title,
+        Style::default()
+            .fg(if app.focus == 3 { ACCENT } else { BRIGHT })
+            .bold(),
+    );
+    let Some(result) = app.results.get(app.result) else {
+        label(
+            frame,
+            Rect::new(inner.x + 1, inner.y + 2, inner.width.saturating_sub(2), 1),
+            "Query results appear here · F5 statement / F6 script",
+            Style::default().fg(MUTED),
+        );
+        return;
+    };
+    if result.columns.is_empty() {
+        label(
+            frame,
+            Rect::new(inner.x + 1, inner.y + 2, inner.width.saturating_sub(2), 1),
+            &result.message,
+            Style::default().fg(FG),
+        );
+        return;
+    }
+    let grid_area = Rect::new(
+        inner.x + 1,
+        inner.y + 1,
+        inner.width.saturating_sub(2),
+        inner.height.saturating_sub(2),
+    );
+    draw_result_grid(frame, grid_area, result, app.row, app.column);
+    let position = format!(
+        "row {}/{} · column {}/{}{}",
+        app.row + usize::from(!result.rows.is_empty()),
+        result.rows.len(),
+        app.column + 1,
+        result.columns.len(),
+        if result.truncated {
+            " · LIMIT REACHED"
+        } else {
+            ""
+        }
+    );
+    label(
+        frame,
+        Rect::new(
+            inner.x + 1,
+            inner.bottom() - 1,
+            inner.width.saturating_sub(2),
+            1,
+        ),
+        position,
+        Style::default().fg(MUTED),
+    );
+}
+
+fn draw_result_grid(
+    frame: &mut Frame,
+    area: Rect,
+    result: &crate::db::QueryResult,
+    row: usize,
+    column: usize,
+) {
+    if area.width < 9 || area.height < 3 {
+        return;
+    }
+    let row_number_width = (result.rows.len().max(1).to_string().len() + 2).max(5) as u16;
+    let mut widths = vec![row_number_width]; // Includes the right rule.
+    let mut indices = Vec::new();
+    let used = 1u16;
+    for index in column.min(result.columns.len().saturating_sub(1))..result.columns.len() {
+        let header = result.columns[index].width();
+        let sample = result
+            .rows
+            .iter()
+            .take(32)
+            .filter_map(|r| r.get(index))
+            .map(|s| s.width())
+            .max()
+            .unwrap_or(0);
+        let wanted = (header.max(sample) + 2).clamp(12, 28) as u16;
+        let remaining = area.width.saturating_sub(used + widths.iter().sum::<u16>());
+        if remaining < 4 {
+            break;
+        }
+        let width = wanted.min(remaining);
+        widths.push(width);
+        indices.push(index);
+    }
+    if indices.last() == Some(&result.columns.len().saturating_sub(1)) {
+        let spare = area.width.saturating_sub(1 + widths.iter().sum::<u16>());
+        if let Some(last) = widths.last_mut() {
+            *last += spare;
+        }
+    }
+    let grid_width = 1 + widths.iter().sum::<u16>();
+    let mut boundaries = vec![area.x];
+    let mut x = area.x;
+    for width in &widths {
+        x += *width;
+        boundaries.push(x);
+    }
+    let header_style = Style::default().fg(BRIGHT).bg(SURFACE).bold();
+    frame.render_widget(
+        Block::default().style(Style::default().bg(SURFACE)),
+        Rect::new(area.x, area.y, grid_width, 1),
+    );
+    label(
+        frame,
+        Rect::new(area.x + 2, area.y, row_number_width - 2, 1),
+        "#",
+        header_style,
+    );
+    for (slot, index) in indices.iter().enumerate() {
+        label(
+            frame,
+            Rect::new(
+                boundaries[slot + 1] + 2,
+                area.y,
+                widths[slot + 1].saturating_sub(2),
+                1,
+            ),
+            &result.columns[*index],
+            header_style,
+        );
+    }
+    let max_rows = (area.height.saturating_sub(2) / 2) as usize;
+    let start = row.saturating_sub(max_rows.saturating_sub(1));
+    let visible = result
+        .rows
+        .iter()
+        .enumerate()
+        .skip(start)
+        .take(max_rows)
+        .collect::<Vec<_>>();
+    for (offset, (index, cells)) in visible.iter().enumerate() {
+        let y = area.y + 2 + offset as u16 * 2;
+        let selected = *index == row;
+        let style = Style::default()
+            .bg(if selected { PANEL } else { BG })
+            .fg(if selected { BRIGHT } else { FG });
+        frame.render_widget(
+            Block::default().style(style),
+            Rect::new(area.x, y, grid_width, 1),
+        );
+        label(
+            frame,
+            Rect::new(area.x + 2, y, row_number_width - 2, 1),
+            format!("{}", index + 1),
+            style,
+        );
+        for (slot, col) in indices.iter().enumerate() {
+            let value = cells
+                .get(*col)
+                .map_or("", String::as_str)
+                .replace(['\n', '\r', '\t'], " ");
+            label(
+                frame,
+                Rect::new(
+                    boundaries[slot + 1] + 2,
+                    y,
+                    widths[slot + 1].saturating_sub(2),
+                    1,
+                ),
+                value,
+                style,
             );
         }
-        _ => {
-            let title = format!(
-                "4  Results  {}/{}",
-                if app.results.is_empty() {
-                    0
+    }
+    let bottom = area.y + 1 + visible.len() as u16 * 2;
+    for y in area.y..=bottom.min(area.bottom() - 1) {
+        let is_rule = y > area.y && (y - area.y) % 2 == 1;
+        for (i, bx) in boundaries.iter().enumerate() {
+            let symbol = if is_rule {
+                if i == 0 {
+                    "├"
+                } else if i == boundaries.len() - 1 {
+                    "┤"
                 } else {
-                    app.result + 1
-                },
-                app.results.len()
-            );
-            let b = block(title, app.focus == 3);
-            let Some(result) = app.results.get(app.result) else {
-                frame.render_widget(Paragraph::new("\n  Query results appear here.\n\n  F5 Execute statement or selection\n  F6 Execute the entire SQL file").style(Style::default().fg(MUTED)).block(b),area);
-                return;
+                    "┼"
+                }
+            } else {
+                "│"
             };
-            if result.columns.is_empty() {
-                frame.render_widget(
-                    Paragraph::new(format!("\n  {}", result.message)).block(b),
-                    area,
-                );
-                return;
+            frame.buffer_mut()[(*bx, y)]
+                .set_symbol(symbol)
+                .set_fg(BORDER);
+        }
+        if is_rule {
+            for dx in 1..grid_width - 1 {
+                let px = area.x + dx;
+                if !boundaries.contains(&px) {
+                    frame.buffer_mut()[(px, y)].set_symbol("─").set_fg(BORDER);
+                }
             }
-            let count = ((area.width.saturating_sub(4)) / 20).max(1) as usize;
-            let start = app.column;
-            let end = (start + count).min(result.columns.len());
-            let widths: Vec<Constraint> = (start..end).map(|_| Constraint::Min(16)).collect();
-            let rows = result.rows.iter().map(|r| {
-                Row::new(
-                    r[start..end]
-                        .iter()
-                        .map(|c| Cell::from(c.replace(['\n', '\r', '\t'], " "))),
-                )
-            });
-            let table = Table::new(rows, widths)
-                .header(
-                    Row::new(
-                        result.columns[start..end]
-                            .iter()
-                            .map(|s| Cell::from(s.clone())),
-                    )
-                    .style(Style::default().fg(ACCENT).bg(PANEL))
-                    .height(1),
-                )
-                .block(b.title_bottom(format!(
-                    " row {}/{} · column {}/{}{} ",
-                    app.row + usize::from(!result.rows.is_empty()),
-                    result.rows.len(),
-                    app.column + 1,
-                    result.columns.len(),
-                    if result.truncated {
-                        " · LIMIT REACHED"
-                    } else {
-                        ""
-                    }
-                )))
-                .row_highlight_style(Style::default().bg(PANEL))
-                .column_spacing(2);
-            let mut state = TableState::default().with_selected(Some(app.row));
-            frame.render_stateful_widget(table, area, &mut state);
         }
     }
 }
@@ -339,7 +778,7 @@ fn draw_modal(frame: &mut Frame, app: &App) {
             frame.render_widget(
                 Tabs::new(["Details", "Advanced", "User info", "Proxy User"])
                     .select(form.section)
-                    .highlight_style(Style::default().fg(ACCENT).bg(PANEL))
+                    .highlight_style(Style::default().fg(BG).bg(ACCENT).bold())
                     .style(Style::default().fg(MUTED)),
                 parts[0],
             );
@@ -416,7 +855,7 @@ fn draw_modal(frame: &mut Frame, app: &App) {
                         app.working_label.unwrap_or("Working"),
                         app.started.elapsed().as_secs_f32()
                     ),
-                    AMBER,
+                    ACCENT,
                 ))
             } else if form.action_attempted {
                 Some((
@@ -434,8 +873,13 @@ fn draw_modal(frame: &mut Frame, app: &App) {
                     .wrap(Wrap { trim: false }),
                 parts[2],
             );
+            let actions = if parts[3].width < 65 {
+                "F5 Test  F6 Connect\nF2 Save  Esc Cancel"
+            } else {
+                " F5 Test (Ping)     F6 Connect     F2 Save     Esc Cancel"
+            };
             frame.render_widget(
-                Paragraph::new(" F5 Test (Ping)     F6 Connect     F2 Save     Esc Cancel")
+                Paragraph::new(actions)
                     .style(Style::default().fg(ACCENT).bg(PANEL))
                     .wrap(Wrap { trim: false }),
                 parts[3],
@@ -637,6 +1081,150 @@ mod tests {
         assert!(rendered.contains("Keyboard reference"));
         assert!(rendered.contains("GLOBAL"));
         assert!(rendered.contains("F5 / F6"));
+    }
+
+    #[test]
+    fn reference_workspace_uses_approved_gold_accent() {
+        assert_eq!(ACCENT, Color::Rgb(226, 163, 95));
+    }
+
+    #[test]
+    fn reference_workspace_renders_navigation_and_result_grid() {
+        let mut app = App::new(crate::config::Config::default(), "unused".into());
+        app.schema = "APP_DEV".into();
+        app.results = vec![crate::db::QueryResult {
+            columns: vec!["ID".into(), "CUSTOMER".into(), "STATUS".into()],
+            rows: vec![
+                vec!["1".into(), "Ana".into(), "PAID".into()],
+                vec!["2".into(), "Diego".into(), "PENDING".into()],
+            ],
+            ..Default::default()
+        }];
+        app.focus = 3;
+        app.row = 1;
+        let mut terminal = Terminal::new(ratatui::backend::TestBackend::new(120, 40)).unwrap();
+        terminal.draw(|frame| draw(frame, &mut app)).unwrap();
+        let buffer = terminal.backend().buffer();
+        let rendered = buffer
+            .content()
+            .iter()
+            .map(|cell| cell.symbol())
+            .collect::<String>();
+        for expected in [
+            "Connections",
+            "SCHEMA / APP_DEV",
+            "FILES",
+            "SQL EDITOR",
+            "RESULTS",
+            "CUSTOMER",
+            "F1 Help",
+        ] {
+            assert!(rendered.contains(expected), "missing {expected}");
+        }
+        assert!(
+            rendered.contains('┼'),
+            "result columns and rows need intersections"
+        );
+        assert!(
+            buffer.content().iter().any(|cell| cell.bg == ACCENT),
+            "active SQL tab should use the gold accent"
+        );
+    }
+
+    #[test]
+    fn sidebar_focus_colors_connections_explorer_and_active_file() {
+        let profile = crate::config::Profile {
+            name: "DEV_ORACLE".into(),
+            ..Default::default()
+        };
+        let mut app = App::new(
+            crate::config::Config {
+                connections: vec![profile],
+            },
+            "unused".into(),
+        );
+        app.schema = "APP_DEV".into();
+        app.objects = vec![crate::db::DbObject {
+            owner: "APP_DEV".into(),
+            name: "ORDERS".into(),
+            kind: "TABLE".into(),
+        }];
+        app.docs = (0..4)
+            .map(|i| {
+                crate::app::Document::new(
+                    "SELECT 1 FROM dual;",
+                    Some(format!("file-{i}.sql").into()),
+                )
+            })
+            .collect();
+        app.doc = 3;
+        let mut terminal = Terminal::new(ratatui::backend::TestBackend::new(120, 40)).unwrap();
+        for (focus, title_y, row_y) in [(0, 2, 4), (1, 10, 12), (2, 33, 36)] {
+            app.focus = focus;
+            terminal.draw(|frame| draw(frame, &mut app)).unwrap();
+            let buffer = terminal.backend().buffer();
+            assert_eq!(buffer[(1, title_y)].fg, ACCENT, "section {focus} title");
+            assert_eq!(buffer[(1, row_y)].bg, ACCENT, "section {focus} selection");
+        }
+        app.focus = 3;
+        terminal.draw(|frame| draw(frame, &mut app)).unwrap();
+        let buffer = terminal.backend().buffer();
+        for row_y in [4, 12, 36] {
+            assert_eq!(
+                buffer[(1, row_y)].bg,
+                PANEL,
+                "inactive selection at {row_y}"
+            );
+        }
+    }
+
+    #[test]
+    fn result_grid_stays_in_bounds_on_narrow_terminal() {
+        let mut app = App::new(crate::config::Config::default(), "unused".into());
+        app.focus = 3;
+        app.column = 2;
+        app.results = vec![crate::db::QueryResult {
+            columns: vec!["A".into(), "B".into(), "VERY_LONG_COLUMN_NAME".into()],
+            rows: vec![vec![
+                "1".into(),
+                "2".into(),
+                "A long value with Unicode: Lucía".into(),
+            ]],
+            ..Default::default()
+        }];
+        let rendered = rendered_text(&mut app, 45, 14);
+        assert!(rendered.contains("VERY_LONG"));
+        assert!(rendered.contains('┼'));
+    }
+
+    #[test]
+    fn minimum_size_keeps_panel_navigation_and_form_actions_visible() {
+        let mut app = App::new(crate::config::Config::default(), "unused".into());
+        for focus in 0..4 {
+            app.focus = focus;
+            let rendered = rendered_text(&mut app, 45, 14);
+            assert!(rendered.contains("Tab/Shift+Tab Panel"));
+            assert!(rendered.contains("F1 Help"));
+        }
+        app.modal = Some(Modal::Form(Box::new(crate::app::ConnectionForm::new(
+            crate::config::Profile::default(),
+        ))));
+        let rendered = rendered_text(&mut app, 45, 14);
+        assert!(rendered.contains("F2 Save"));
+        assert!(rendered.contains("Esc Cancel"));
+    }
+
+    #[test]
+    fn result_row_number_expands_for_four_digits() {
+        let mut app = App::new(crate::config::Config::default(), "unused".into());
+        app.focus = 3;
+        app.row = 999;
+        app.results = vec![crate::db::QueryResult {
+            columns: vec!["ID".into()],
+            rows: (1..=1000).map(|i| vec![i.to_string()]).collect(),
+            ..Default::default()
+        }];
+        assert!(rendered_text(&mut app, 80, 24).contains("1000│"));
     }
 
     #[test]
