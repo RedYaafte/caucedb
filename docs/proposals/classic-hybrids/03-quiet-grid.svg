@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<rect x="0" y="0" width="1600" height="1000" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="22" y="36" fill="#e2a35f" font-family="DejaVu Sans Mono,monospace" font-size="22" font-weight="700" text-anchor="start" xml:space="preserve">03  QUIET GRID</text>
+<text x="24" y="63" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">Current layout · deeper workspace · precise outlines and calmer accents</text>
+<rect x="18" y="78" width="1564" height="862" fill="#11100f" stroke="#625a50" stroke-width="1"/>
+<text x="38" y="114" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="16" font-weight="700" text-anchor="start" xml:space="preserve">CAUCEDB /</text>
+<text x="156" y="114" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">DEV_ORACLE</text>
+<text x="311" y="114" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">TRANSACTION · CHECK / COMMIT / ROLLBACK</text>
+<line x1="18" y1="132" x2="1582" y2="132" stroke="#625a50" stroke-width="1"/>
+<rect x="30" y="157" width="249" height="133" fill="#11100f" stroke="#625a50" stroke-width="1"/>
+<rect x="41" y="148" width="150.79999999999998" height="18" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="48" y="162" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">1  Connections</text>
+<rect x="42" y="183" width="225" height="30" fill="#35312c" stroke="none" stroke-width="1"/>
+<text x="50" y="205" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="700" text-anchor="start" xml:space="preserve">› ● DEV_ORACLE</text>
+<text x="49" y="241" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">Oracle 21c · dev-db.internal</text>
+<rect x="30" y="309" width="249" height="543" fill="#11100f" stroke="#625a50" stroke-width="1"/>
+<rect x="41" y="300" width="114" height="18" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="48" y="314" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">2  APP_DEV</text>
+<rect x="41" y="320" width="226" height="52" fill="#35312c" stroke="none" stroke-width="1"/>
+<text x="49" y="341" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="700" text-anchor="start" xml:space="preserve">› ORDERS</text>
+<text x="63" y="363" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">table</text>
+<text x="49" y="400" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  CUSTOMERS</text>
+<text x="63" y="422" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">table</text>
+<text x="49" y="459" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  ORDER_ITEMS</text>
+<text x="63" y="481" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">table</text>
+<text x="49" y="518" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  PAYMENTS</text>
+<text x="63" y="540" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">table</text>
+<text x="49" y="577" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  ACTIVE_ORDERS</text>
+<text x="63" y="599" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">view</text>
+<text x="49" y="636" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  F_TOTAL</text>
+<text x="63" y="658" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">function</text>
+<text x="49" y="695" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  F_TAX</text>
+<text x="63" y="717" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">function</text>
+<text x="49" y="754" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">  PKG_REPORTING</text>
+<text x="63" y="776" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">package</text>
+<text x="43" y="835" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">/ filter    F3 schema</text>
+<rect x="290" y="140" width="1279" height="31" fill="#11100f" stroke="none" stroke-width="1"/>
+<rect x="300" y="143" width="167" height="27" fill="#35312c" stroke="none" stroke-width="1"/>
+<text x="311" y="163" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="700" text-anchor="start" xml:space="preserve">1 orders.sql *</text>
+<text x="484" y="163" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">2 scratch.sql</text>
+<rect x="290" y="184" width="1279" height="340" fill="#11100f" stroke="#bd8857" stroke-width="1"/>
+<rect x="301" y="175" width="325.59999999999997" height="18" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="308" y="189" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="700" text-anchor="start" xml:space="preserve">3  SQL editor   ·   Ctrl+←/→ tabs</text>
+<rect x="291" y="185" width="1277" height="338" fill="#11100f" stroke="none" stroke-width="1"/>
+<rect x="301" y="213" width="43" height="300" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="332" y="236" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<text x="361" y="236" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">SELECT</text>
+<text x="415.24" y="236" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve"> order_id, customer, status,</text>
+<text x="332" y="264" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<text x="361" y="264" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">       created_at, total_usd, owner, region</text>
+<text x="332" y="292" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="361" y="292" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">FROM</text>
+<text x="397.15999999999997" y="292" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">   app_dev.orders</text>
+<text x="332" y="320" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="end" xml:space="preserve">4</text>
+<text x="361" y="320" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">WHERE</text>
+<text x="406.2" y="320" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">  created_at &gt;= </text>
+<text x="550.8399999999999" y="320" fill="#9caa76" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">DATE '2026-09-30'</text>
+<text x="332" y="348" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="end" xml:space="preserve">5</text>
+<text x="361" y="348" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">ORDER BY</text>
+<text x="433.32" y="348" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve"> created_at DESC;</text>
+<text x="361" y="480" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">-- Sample query · no production data</text>
+<rect x="290" y="184" width="1279" height="340" fill="none" stroke="#bd8857" stroke-width="1"/>
+<rect x="301" y="175" width="319" height="18" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="308" y="189" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="700" text-anchor="start" xml:space="preserve">3  SQL editor   ·   Ctrl+←/→ tabs</text>
+<rect x="290" y="550" width="1279" height="302" fill="#11100f" stroke="#625a50" stroke-width="1"/>
+<rect x="301" y="541" width="160" height="18" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="308" y="555" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">4  Results  1/1</text>
+<rect x="301" y="568" width="1267" height="249" fill="#11100f" stroke="#8b8176" stroke-width="1"/>
+<rect x="302" y="569" width="1265" height="32" fill="#35312c" stroke="none" stroke-width="1"/>
+<rect x="302" y="601" width="1265" height="24" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="311" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">01</text>
+<text x="353" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10041</text>
+<text x="473" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">ACME NORTH</text>
+<text x="654" y="618" fill="#9caa76" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PAID</text>
+<text x="782" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-09-30 09:12</text>
+<text x="1021" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">1,280.00</text>
+<text x="1190" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">MARA</text>
+<text x="1340" y="618" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">NORTH</text>
+<rect x="302" y="625" width="1265" height="24" fill="#171614" stroke="none" stroke-width="1"/>
+<text x="311" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">02</text>
+<text x="353" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10042</text>
+<text x="473" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">LUMEN LAB</text>
+<text x="654" y="642" fill="#9caa76" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PAID</text>
+<text x="782" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-09-30 10:45</text>
+<text x="1021" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">840.50</text>
+<text x="1190" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">ALEX</text>
+<text x="1340" y="642" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">WEST</text>
+<rect x="302" y="649" width="1265" height="24" fill="#35312c" stroke="none" stroke-width="1"/>
+<text x="311" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">03</text>
+<text x="353" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10043</text>
+<text x="473" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">SOLARIS</text>
+<text x="654" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PENDING</text>
+<text x="782" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-09-30 11:08</text>
+<text x="1021" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2,090.00</text>
+<text x="1190" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">NORA</text>
+<text x="1340" y="666" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">CENTRAL</text>
+<rect x="302" y="673" width="1265" height="24" fill="#171614" stroke="none" stroke-width="1"/>
+<text x="311" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">04</text>
+<text x="353" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10044</text>
+<text x="473" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">ATLAS CO</text>
+<text x="654" y="690" fill="#9caa76" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PAID</text>
+<text x="782" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-09-30 13:21</text>
+<text x="1021" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">475.00</text>
+<text x="1190" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">MARA</text>
+<text x="1340" y="690" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">EAST</text>
+<rect x="302" y="697" width="1265" height="24" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="311" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">05</text>
+<text x="353" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10045</text>
+<text x="473" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">MESA TECH</text>
+<text x="654" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PENDING</text>
+<text x="782" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-10-01 08:30</text>
+<text x="1021" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">3,405.75</text>
+<text x="1190" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">ELI</text>
+<text x="1340" y="714" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">NORTH</text>
+<rect x="302" y="721" width="1265" height="24" fill="#171614" stroke="none" stroke-width="1"/>
+<text x="311" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">06</text>
+<text x="353" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10046</text>
+<text x="473" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">NOVA GROUP</text>
+<text x="654" y="738" fill="#9caa76" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PAID</text>
+<text x="782" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-10-01 09:54</text>
+<text x="1021" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">1,120.00</text>
+<text x="1190" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">ALEX</text>
+<text x="1340" y="738" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">SOUTH</text>
+<rect x="302" y="745" width="1265" height="24" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="311" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">07</text>
+<text x="353" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10047</text>
+<text x="473" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">IRIS WORKS</text>
+<text x="654" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">DRAFT</text>
+<text x="782" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-10-01 10:06</text>
+<text x="1021" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">925.20</text>
+<text x="1190" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">NORA</text>
+<text x="1340" y="762" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">WEST</text>
+<rect x="302" y="769" width="1265" height="24" fill="#171614" stroke="none" stroke-width="1"/>
+<text x="311" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">08</text>
+<text x="353" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10048</text>
+<text x="473" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">CEDAR LTD</text>
+<text x="654" y="786" fill="#9caa76" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PAID</text>
+<text x="782" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-10-01 11:41</text>
+<text x="1021" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">6,020.00</text>
+<text x="1190" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">ELI</text>
+<text x="1340" y="786" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">CENTRAL</text>
+<rect x="302" y="793" width="1265" height="24" fill="#11100f" stroke="none" stroke-width="1"/>
+<text x="311" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">09</text>
+<text x="353" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">10049</text>
+<text x="473" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">EMBER INC</text>
+<text x="654" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">PENDING</text>
+<text x="782" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">2026-10-01 12:08</text>
+<text x="1021" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">780.30</text>
+<text x="1190" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">MARA</text>
+<text x="1340" y="810" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">EAST</text>
+<text x="311" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">#</text>
+<text x="353" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">ORDER_ID</text>
+<line x1="343" y1="568" x2="343" y2="817" stroke="#8b8176" stroke-width="1"/>
+<text x="473" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">CUSTOMER</text>
+<line x1="463" y1="568" x2="463" y2="817" stroke="#8b8176" stroke-width="1"/>
+<text x="654" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">STATUS</text>
+<line x1="644" y1="568" x2="644" y2="817" stroke="#8b8176" stroke-width="1"/>
+<text x="782" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">CREATED_AT</text>
+<line x1="772" y1="568" x2="772" y2="817" stroke="#8b8176" stroke-width="1"/>
+<text x="1021" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">TOTAL_USD</text>
+<line x1="1011" y1="568" x2="1011" y2="817" stroke="#8b8176" stroke-width="1"/>
+<text x="1190" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">OWNER</text>
+<line x1="1180" y1="568" x2="1180" y2="817" stroke="#8b8176" stroke-width="1"/>
+<text x="1340" y="591" fill="#fff7eb" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="700" text-anchor="start" xml:space="preserve">REGION</text>
+<line x1="1330" y1="568" x2="1330" y2="817" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="601" x2="1568" y2="601" stroke="#8b8176" stroke-width="1.5"/>
+<line x1="301" y1="625" x2="1568" y2="625" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="649" x2="1568" y2="649" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="673" x2="1568" y2="673" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="697" x2="1568" y2="697" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="721" x2="1568" y2="721" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="745" x2="1568" y2="745" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="769" x2="1568" y2="769" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="793" x2="1568" y2="793" stroke="#8b8176" stroke-width="1"/>
+<line x1="301" y1="817" x2="1568" y2="817" stroke="#8b8176" stroke-width="1"/>
+<rect x="464" y="650" width="179" height="22" fill="none" stroke="#e2a35f" stroke-width="2"/>
+<text x="302" y="845" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="400" text-anchor="start" xml:space="preserve">row 3/9 · column 3/8</text>
+<text x="40" y="885" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="14" font-weight="400" text-anchor="start" xml:space="preserve">Statement 1 · 9 rows · 45 ms</text>
+<rect x="19" y="905" width="1562" height="34" fill="#171614" stroke="none" stroke-width="1"/>
+<text x="37" y="928" fill="#e8dfd0" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="700" text-anchor="start" xml:space="preserve">↑↓ Rows    ←→ Columns    Enter Cell    [ ] Results</text>
+<text x="1558" y="928" fill="#bd8857" font-family="DejaVu Sans Mono,monospace" font-size="13" font-weight="700" text-anchor="end" xml:space="preserve">F5 Run    F6 Script    F7 Commit    F9 Rollback    F1 Help</text>
+<text x="24" y="971" fill="#a69a8b" font-family="DejaVu Sans Mono,monospace" font-size="12" font-weight="400" text-anchor="start" xml:space="preserve">Canvas #11100f   ·   Text #e8dfd0   ·   Grid #8b8176   ·   Focus #bd8857</text>
+</svg>
